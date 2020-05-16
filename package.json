@@ -1,7 +1,6 @@
 {
   "name": "extension",
   "version": "1.0.0",
-  "description": "",
   "main": "background.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,5 +8,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/chrome": "0.0.112",
+    "eslint": "^7.0.0"
+  },
+  "dependencies": {},
+  "description": ""
 }
