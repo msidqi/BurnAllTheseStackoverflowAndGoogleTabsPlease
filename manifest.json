@@ -1,8 +1,8 @@
 {
-    "name": "BurnStackoverflowAndGoogleTabs",
+    "name": "BurnAllTheseStackoverflowAndGoogleTabsPlease",
     "version": "1.0",
     "description": "Close all unwanted tabs after you're done trouble-shooting a bug/problem!",
-	"permissions": ["storage", "declarativeContent", "activeTab", "tabs"],
+	"permissions": ["storage", "activeTab", "tabs"],
 	"options_page": "src/options.html",
 	"background": {
 		"scripts": ["src/background.js"],

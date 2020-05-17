@@ -15,9 +15,14 @@
 #checkboxInput {
 }
 
+#container {
+	
+}
+
 .urlBox {
   background-color: white;
   width: 200px;
+  overflow: auto;
   border-radius: 4px;
   border: solid grey 1px;
   margin: 10px auto;
