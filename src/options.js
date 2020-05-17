@@ -24,9 +24,7 @@ const addUrlToOptions = () => {
     tabsDiv.appendChild(singleTabDiv);
     chrome.storage.sync.get("tabsToClose", obj => {
       const tabsToClose = [...obj.tabsToClose, tabInfo];
-      chrome.storage.sync.set({ tabsToClose }, () =>
-        console.log("updated tabsToClose")
-      );
+      updateTabsStored(tabsToClose);
     });
 
     // reset inputs
@@ -51,31 +49,29 @@ const createSingleTabDiv = tabInfo => {
         if (
           element.url == this.childNodes[0].innerText &&
           element.isExactMatch ==
-            (this.childNodes[0].getAttribute("checkbox") == "checked"
-              ? true
-              : false)
+            (this.childNodes[0].getAttribute("checkbox") == "checked")
         )
           return true;
         return false;
       });
       tabsToClose.splice(index, 1);
-      console.log("tabsToClose", index, tabsToClose, this);
-      chrome.storage.sync.set({ tabsToClose }, () =>
-        console.log("updated tabsToClose")
-      );
+      updateTabsStored(tabsToClose);
     });
     this.parentElement.removeChild(this);
   });
   return singleTabDiv;
 };
 
-const constructOptions = tabsToClose => {
-  for (let tabInfo of tabsToClose) {
+const updateTabsStored = tabsToClose => {
+  chrome.storage.sync.set({ tabsToClose }, () =>
+    console.log("updated tabsToClose")
+  );
+};
+
+
+chrome.storage.sync.get("tabsToClose", obj => {
+  for (let tabInfo of obj.tabsToClose) {
     let singleTabDiv = createSingleTabDiv(tabInfo);
     tabsDiv.appendChild(singleTabDiv);
   }
-};
-
-chrome.storage.sync.get("tabsToClose", obj => {
-  constructOptions(obj.tabsToClose);
 });
