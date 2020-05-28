@@ -1,15 +1,12 @@
-## Docs
-In case you didn't understand what it does, this extension closes all stackoverflow and google tabs for you after you're done toubleshooting/fixing a bug. (you can edit which tabs to close)
-## <br>
+A chrome extension to automatically close all stackoverflow and google tabs after you're done toubleshooting/fixing a bug. It's also customizable. 
 
-# installation
-- go to chrome://extensions/
+# How To Install
+* Open `chrome://extensions/`.
+* Activate "Developer Mode".
+* Load the app folder by clicking on "Load unpacked".
 
-- activate Developer Mode
-
-- Select the app folder by clicking on "Load unpacked"
-
-- (optional) add more websites in extension option
+# Customizations 
+* You can customize which websites to close in the extension options tab. 
 
 
 "You owe it to yourself to experience this extension, by far one of the most compelling extension this year." --Parisa Tabriz
