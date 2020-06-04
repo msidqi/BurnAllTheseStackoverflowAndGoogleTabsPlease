@@ -61,7 +61,7 @@ const CloseTabs = () => {
   chrome.storage.sync.get("tabsToClose", obj => {
     const wantedRegex = getWantedRegex(obj.tabsToClose);
 
-    chrome.tabs.query({}, tabs => {
+    chrome.tabs.query({ currentWindow: true }, tabs => {
       let tabIdsToRemove = findTabsByUrl(tabs, wantedRegex);
       chrome.tabs.remove(tabIdsToRemove);
     });
