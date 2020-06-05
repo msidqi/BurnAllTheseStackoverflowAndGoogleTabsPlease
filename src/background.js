@@ -33,7 +33,7 @@ const getWantedRegex = wantedMatches => {
       return new RegExp(`${wantedMatch.url}`);
     }
     return new RegExp(
-      `^((http|https):\\/\\/)?([0-9a-z-]+\\.)*${wantedMatch.url}`
+      `^((http|https):\\/\\/)?(www.)?${wantedMatch.url}`
     );
   });
 };
@@ -67,10 +67,3 @@ const CloseTabs = () => {
     });
   });
 };
-
-
-/*
-attempt at your own risk...
-let u = 'stackoverflow.com';
-(new RegExp(`^((http|https)://)?([0-9a-z-]+\.)*${u}`, 'i')).test("https://www.google.com/search?ei=ax28XtaqEbPuxgO5zaGYAw&q=selenium&oq=cilinium&gs_lcp=CgZwc3ktYWIQAxgAMgQIABAKMgQIABAKMgQIABAKMgQIABAKMgQIABAKMgQIABAKMgQIABAKMgQIABAKMgQIABAKMgQIABAKOgIIAFCwaVi3hwFgqJkBaAJwAHgAgAGlAYgB6gmSAQMxLjmYAQCgAQGqAQdnd3Mtd2l6sAEA&sclient=psy-ab")
-*/
