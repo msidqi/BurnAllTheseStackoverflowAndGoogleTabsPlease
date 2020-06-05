@@ -2,14 +2,17 @@ chrome.runtime.onInstalled.addListener(() => {
   const tabsToClose = [
     {
       url: "stackoverflow.com",
-      isExactMatch: false
+      isExactMatch: false,
     },
     {
       url: "google.com",
-      isExactMatch: false
-    }
+      isExactMatch: false,
+    },
   ];
-  chrome.storage.sync.set({ tabsToClose }, () =>
+  const globalOptions = {
+    currentWindow: false,
+  };
+  chrome.storage.sync.set({ tabsToClose, globalOptions }, () =>
     console.log("default settings saved")
   );
 });
@@ -20,21 +23,19 @@ chrome.browserAction.onClicked.addListener(() => {
     .catch(() => console.log("Did not confirm closing tabs"));
 });
 
-const asyncConfirm = msg => {
+const asyncConfirm = (msg) => {
   return new Promise((resolve, reject) => {
     if (window.confirm(msg)) resolve(true);
     else reject(false);
   });
 };
 
-const getWantedRegex = wantedMatches => {
-  return wantedMatches.map(wantedMatch => {
+const getWantedRegex = (wantedMatches) => {
+  return wantedMatches.map((wantedMatch) => {
     if (wantedMatch.isExactMatch) {
       return new RegExp(`^${wantedMatch.url}$`);
     }
-    return new RegExp(
-      `^((http|https):\\/\\/)?(www.)?${wantedMatch.url}`
-    );
+    return new RegExp(`^((http|https):\\/\\/)?(www.)?${wantedMatch.url}`);
   });
 };
 
@@ -58,10 +59,14 @@ const findTabsByUrl = (tabs, wantedRegex) => {
 };
 
 const CloseTabs = () => {
-  chrome.storage.sync.get("tabsToClose", obj => {
+  chrome.storage.sync.get(["tabsToClose", "globalOptions"], (obj) => {
     const wantedRegex = getWantedRegex(obj.tabsToClose);
-
-    chrome.tabs.query({}, tabs => {
+    const currentWindow = obj.globalOptions
+      ? !!obj.globalOptions.currentWindow
+      : false;
+    const options = {};
+    if (currentWindow) options.currentWindow = currentWindow;
+    chrome.tabs.query(options, (tabs) => {
       let tabIdsToRemove = findTabsByUrl(tabs, wantedRegex);
       chrome.tabs.remove(tabIdsToRemove);
     });

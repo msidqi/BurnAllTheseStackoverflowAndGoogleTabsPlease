@@ -1,13 +1,32 @@
 let tabsDiv = document.getElementById("tabsDiv");
 let urlInput = document.getElementById("urlInput");
 let checkboxInput = document.getElementById("checkboxInput");
+let windowOptionCheckbox = document.getElementById("windowOptionCheckbox");
 
-checkboxInput.addEventListener("click", e => {
-  if (e.target.value == "unchecked") e.target.value = "checked";
-  else e.target.value = "unchecked";
+checkboxInput.addEventListener("click", (e) => {
+  if (e.target.checked) e.target.checked = true;
+  else e.target.checked = false;
 });
 
-urlInput.addEventListener("keypress", e => {
+windowOptionCheckbox.addEventListener("click", (e) => {
+  let globalOptions = { currentWindow: false };
+  let checked = null;
+
+  if (e.target.checked) {
+    checked = true;
+    globalOptions.currentWindow = true;
+  } else {
+    checked = false;
+    globalOptions.currentWindow = false;
+  }
+
+  chrome.storage.sync.set({ globalOptions }, () => {
+    if (checked != null) e.target.checked = checked;
+    console.log("windowOption saved", globalOptions);
+  });
+});
+
+urlInput.addEventListener("keypress", (e) => {
   if (e.keyCode == 13) {
     addUrlToOptions();
   }
@@ -16,40 +35,40 @@ urlInput.addEventListener("keypress", e => {
 const addUrlToOptions = () => {
   const tabInfo = {
     url: urlInput.value,
-    isExactMatch: checkboxInput.value == "unchecked" ? false : true
+    isExactMatch: !!checkboxInput.checked,
   };
 
   if (tabInfo.url) {
     let singleTabDiv = createSingleTabDiv(tabInfo);
     tabsDiv.appendChild(singleTabDiv);
-    chrome.storage.sync.get("tabsToClose", obj => {
+    chrome.storage.sync.get("tabsToClose", (obj) => {
       const tabsToClose = [...obj.tabsToClose, tabInfo];
       updateTabsStored(tabsToClose);
     });
 
     // reset inputs
     urlInput.value = "";
-    checkboxInput.value = "unchecked";
+    checkboxInput.checked = false;
   }
 };
 
-const createSingleTabDiv = tabInfo => {
+const createSingleTabDiv = (tabInfo) => {
   let h4 = document.createElement("h4");
   h4.innerHTML = tabInfo.url;
-  h4.setAttribute("checkbox", tabInfo.isExactMatch ? "checked" : "unchecked");
+  h4.setAttribute("checkbox", tabInfo.isExactMatch);
 
   let singleTabDiv = document.createElement("div");
   singleTabDiv.classList.add("urlBox");
   singleTabDiv.appendChild(h4);
 
-  singleTabDiv.addEventListener("click", function(e) {
-    chrome.storage.sync.get("tabsToClose", obj => {
+  singleTabDiv.addEventListener("click", function (e) {
+    chrome.storage.sync.get("tabsToClose", (obj) => {
       const tabsToClose = obj.tabsToClose;
-      const index = tabsToClose.findIndex(element => {
+      const index = tabsToClose.findIndex((element) => {
         if (
           element.url == this.childNodes[0].innerText &&
           element.isExactMatch ==
-            (this.childNodes[0].getAttribute("checkbox") == "checked")
+            (this.childNodes[0].getAttribute("checkbox") == true)
         )
           return true;
         return false;
@@ -62,14 +81,19 @@ const createSingleTabDiv = tabInfo => {
   return singleTabDiv;
 };
 
-const updateTabsStored = tabsToClose => {
+const updateTabsStored = (tabsToClose) => {
   chrome.storage.sync.set({ tabsToClose }, () =>
     console.log("updated tabsToClose")
   );
 };
 
-
-chrome.storage.sync.get("tabsToClose", obj => {
+// load settings
+chrome.storage.sync.get(["tabsToClose", "globalOptions"], (obj) => {
+  // update current window option in the DOM
+  windowOptionCheckbox.checked =
+    obj.globalOptions && obj.globalOptions.currentWindow ? true : false;
+  checkboxInput.checked = false;
+  // load tabsToClose into the DOM
   for (let tabInfo of obj.tabsToClose) {
     let singleTabDiv = createSingleTabDiv(tabInfo);
     tabsDiv.appendChild(singleTabDiv);

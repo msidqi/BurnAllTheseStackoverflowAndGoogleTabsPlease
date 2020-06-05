@@ -9,14 +9,8 @@
   border: solid 1px rgb(209, 209, 209);
 }
 
-#urlInput {
-}
-
-#checkboxInput {
-}
-
-#container {
-	
+.margin10 {
+	margin: 10px;
 }
 
 .urlBox {
