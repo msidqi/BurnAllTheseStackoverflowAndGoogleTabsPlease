@@ -30,7 +30,7 @@ const asyncConfirm = msg => {
 const getWantedRegex = wantedMatches => {
   return wantedMatches.map(wantedMatch => {
     if (wantedMatch.isExactMatch) {
-      return new RegExp(`${wantedMatch.url}`);
+      return new RegExp(`^${wantedMatch.url}$`);
     }
     return new RegExp(
       `^((http|https):\\/\\/)?(www.)?${wantedMatch.url}`
